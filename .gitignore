@@ -1,0 +1,42 @@
+# --- Terraform state files ---
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+
+# --- Terraform working dirs ---
+**/.terraform/*
+.terraform.lock.hcl
+
+# --- Sensitive variable files ---
+terraform.tfvars
+*.tfvars
+*.tfvars.json
+
+# --- SSH keys / certs ---
+*.pem
+*.key
+*.crt
+*.pub
+id_rsa
+id_rsa.pub
+id_ecdsa
+id_ed25519
+id_ed25519.pub
+
+# --- Logs / temp ---
+*.log
+*.tmp
+
+# --- OS / Editor files ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+
+# --- Env files ---
+.env
+.env.*
