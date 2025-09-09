@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: portfolio.lauraokafor.com
+  - host: portfolio.lauraokafor.org
     http:
       paths:
       - path: /
