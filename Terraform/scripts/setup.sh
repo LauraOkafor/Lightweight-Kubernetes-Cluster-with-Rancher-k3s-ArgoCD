@@ -39,8 +39,22 @@ install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 # Install k3s (server mode)
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik" sh -
 
+# Setup kubeconfig for ubuntu user
+mkdir -p /home/ubuntu/.kube
+cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
+chown ubuntu:ubuntu /home/ubuntu/.kube/config
+export KUBECONFIG=/home/ubuntu/.kube/config
+
 # Wait for k3s to be ready
-sleep 30
+echo "Waiting for k3s to be ready..."
+for i in {1..30}; do
+  if kubectl get nodes >/dev/null 2>&1; then
+    echo "k3s is ready"
+    break
+  fi
+  echo "Waiting for k3s... ($i/30)"
+  sleep 10
+done
 
 # Install Rancher
 docker run -d --restart=unless-stopped \
@@ -60,26 +74,20 @@ chown ubuntu:ubuntu /home/ubuntu/rancher-password.txt
 # -------------------------------
 # Install ArgoCD
 # -------------------------------
-# Copy manifests to server
-cp -r /tmp/kubernetes /home/ubuntu/
-cp -r /tmp/apps /home/ubuntu/
-chown -R ubuntu:ubuntu /home/ubuntu/kubernetes /home/ubuntu/apps
+kubectl create namespace argocd || true
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --validate=false
 
-# Install ArgoCD
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl apply -f /home/ubuntu/kubernetes/argocd/install.yaml
+# Wait for ArgoCD to be ready
+echo "Waiting for ArgoCD pods..."
+sleep 60
 
-# Wait for ArgoCD pods to be ready
-echo "Waiting for ArgoCD to start..."
-sleep 90
+# Expose ArgoCD on port 8080
+kubectl patch svc argocd-server -n argocd -p '{"spec":{"type":"NodePort","ports":[{"port":80,"targetPort":8080,"nodePort":30080}]}}'
 
-# Get ArgoCD initial admin password
-ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+# Get ArgoCD password
+ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d 2>/dev/null || echo "admin")
 echo $ARGOCD_PASSWORD > /home/ubuntu/argocd-password.txt
 chown ubuntu:ubuntu /home/ubuntu/argocd-password.txt
-
-# Apply ArgoCD application
-kubectl apply -f /home/ubuntu/kubernetes/argocd/website-app.yaml
 
 # -------------------------------
 # Done
