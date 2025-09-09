@@ -53,16 +53,17 @@ docker run -d --restart=unless-stopped \
 sleep 60
 
 # Get bootstrap password
-# BOOTSTRAP_PASSWORD=$(docker logs rancher 2>&1 | grep "Bootstrap Password:" | tail -1 | cut -d' ' -f3)
-BOOTSTRAP_PASSWORD=$(docker logs rancher 2>&1 | grep "Bootstrap Password:" | tail -1 | awk '{print $NF}')
+BOOTSTRAP_PASSWORD=$(docker logs rancher 2>&1 | grep "Bootstrap Password:" | tail -1 | cut -d' ' -f3)
 
 # Save password to file
 echo $BOOTSTRAP_PASSWORD > /home/ubuntu/rancher-password.txt
 chown ubuntu:ubuntu /home/ubuntu/rancher-password.txt
 
-# Create directory for ArgoCD manifests
+# Create directory for manifests
 mkdir -p /home/ubuntu/argocd
 
 echo "Setup completed successfully!"
 echo "Rancher URL: https://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
-echo "Bootstrap Password saved to: /home/ubuntu/rancher-password.txt"
+echo "ArgoCD URL: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):30080"
+echo "Rancher password: /home/ubuntu/rancher-password.txt"
+echo "ArgoCD password: /home/ubuntu/argocd-password.txt"

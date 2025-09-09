@@ -157,7 +157,7 @@ resource "aws_instance" "k8s_master" {
 
   associate_public_ip_address = true
 
-  user_data = file("${path.module}/setup.sh")
+  user_data = file("${path.module}/scripts/setup.sh")
 
   root_block_device {
     volume_size = 20
@@ -181,7 +181,7 @@ resource "aws_instance" "k8s_worker" {
 
   associate_public_ip_address = true
 
-  user_data = file("${path.module}/setup.sh")
+  user_data = file("${path.module}/scripts/setup.sh")
 
   root_block_device {
     volume_size = 20
