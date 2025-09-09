@@ -32,5 +32,5 @@ output "rancher_bootstrap_password" {
 
 output "argocd_url" {
   description = "ArgoCD access URL"
-  value       = "http://${aws_instance.k8s_master.public_ip}:8080"
+  value       = "http://${aws_instance.k8s_master.public_ip}:30080"
 }

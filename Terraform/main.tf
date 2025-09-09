@@ -134,6 +134,14 @@ resource "aws_security_group" "k8s_cluster" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # ArgoCD NodePort
+  ingress {
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # All outbound traffic
   egress {
     from_port   = 0
@@ -162,6 +170,30 @@ resource "aws_instance" "k8s_master" {
   root_block_device {
     volume_size = 20
     volume_type = "gp3"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/kubernetes"
+    destination = "/tmp/kubernetes"
+    
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/${var.key_pair_name}.pem")
+      host        = self.public_ip
+    }
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/apps"
+    destination = "/tmp/apps"
+    
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/${var.key_pair_name}.pem")
+      host        = self.public_ip
+    }
   }
 
   tags = {

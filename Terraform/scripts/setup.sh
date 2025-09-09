@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup.sh - Initial server setup
+# setup.sh - Initial server setup with Rancher + ArgoCD
 
 set -e
 
@@ -52,16 +52,38 @@ docker run -d --restart=unless-stopped \
 # Wait for Rancher to start and get password
 sleep 60
 
-# Get bootstrap password
+# Get Rancher bootstrap password
 BOOTSTRAP_PASSWORD=$(docker logs rancher 2>&1 | grep "Bootstrap Password:" | tail -1 | cut -d' ' -f3)
-
-# Save password to file
 echo $BOOTSTRAP_PASSWORD > /home/ubuntu/rancher-password.txt
 chown ubuntu:ubuntu /home/ubuntu/rancher-password.txt
 
-# Create directory for manifests
-mkdir -p /home/ubuntu/argocd
+# -------------------------------
+# Install ArgoCD
+# -------------------------------
+# Copy manifests to server
+cp -r /tmp/kubernetes /home/ubuntu/
+cp -r /tmp/apps /home/ubuntu/
+chown -R ubuntu:ubuntu /home/ubuntu/kubernetes /home/ubuntu/apps
 
+# Install ArgoCD
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -f /home/ubuntu/kubernetes/argocd/install.yaml
+
+# Wait for ArgoCD pods to be ready
+echo "Waiting for ArgoCD to start..."
+sleep 90
+
+# Get ArgoCD initial admin password
+ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+echo $ARGOCD_PASSWORD > /home/ubuntu/argocd-password.txt
+chown ubuntu:ubuntu /home/ubuntu/argocd-password.txt
+
+# Apply ArgoCD application
+kubectl apply -f /home/ubuntu/kubernetes/argocd/website-app.yaml
+
+# -------------------------------
+# Done
+# -------------------------------
 echo "Setup completed successfully!"
 echo "Rancher URL: https://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
 echo "ArgoCD URL: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):30080"
