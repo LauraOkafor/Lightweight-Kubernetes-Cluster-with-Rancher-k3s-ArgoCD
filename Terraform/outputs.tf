@@ -34,3 +34,8 @@ output "argocd_url" {
   description = "ArgoCD access URL"
   value       = "http://${aws_instance.k8s_master.public_ip}:30080"
 }
+
+output "setup_status" {
+  description = "Check setup status"
+  value       = "ssh -i ~/.ssh/${var.key_pair_name}.pem ubuntu@${aws_instance.k8s_master.public_ip} 'cat /home/ubuntu/setup-done.txt'"
+}
