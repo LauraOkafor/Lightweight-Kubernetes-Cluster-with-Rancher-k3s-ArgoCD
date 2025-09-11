@@ -42,6 +42,9 @@ mkdir -p /home/ubuntu/.kube
 cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
 chown -R ubuntu:ubuntu /home/ubuntu/.kube
 
+# Make kubectl use this config during script run
+export KUBECONFIG=/home/ubuntu/.kube/config
+
 # Install Rancher
 docker run -d --restart=unless-stopped \
   -p 80:80 -p 443:443 \
@@ -61,8 +64,11 @@ chown ubuntu:ubuntu /home/ubuntu/rancher-password.txt
 kubectl create namespace argocd || true
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# Wait for ArgoCD pods
-sleep 60
+
+
+# Wait for ArgoCD pods to come up
+echo "⏳ Waiting for ArgoCD pods..."
+sleep 90
 
 # Expose ArgoCD via NodePort
 kubectl patch svc argocd-server -n argocd -p '{
@@ -78,6 +84,9 @@ kubectl patch svc argocd-server -n argocd -p '{
     ]
   }
 }'
+
+# Apply your Application manifest (website-app.yaml)
+kubectl apply -f /home/ubuntu/kubernetes/argocd/website-app.yaml
 
 # Save ArgoCD admin password
 ARGOCD_PASS=$(kubectl -n argocd get secret argocd-initial-admin-secret \
