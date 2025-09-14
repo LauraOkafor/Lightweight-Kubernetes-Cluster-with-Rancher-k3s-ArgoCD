@@ -47,7 +47,7 @@ export KUBECONFIG=/home/ubuntu/.kube/config
 
 # Install Rancher
 docker run -d --restart=unless-stopped \
-  -p 80:80 -p 443:443 \
+  -p 8443:443 -p 8080:80 \
   --privileged \
   --name rancher \
   rancher/rancher:latest
@@ -88,7 +88,7 @@ kubectl patch svc argocd-server -n argocd -p '{
 # Apply your Application manifest (website-app.yaml)
 kubectl wait --for=condition=Established crd/applications.argoproj.io --timeout=300s || true
 
-kubectl apply -n argocd -f https://raw.githubusercontent.com/LauraOkafor/Lightweight-Kubernetes-Cluster-with-Rancher-k3s-ArgoCD/HEAD/kubernetes/argocd/website-app.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/LauraOkafor/Lightweight-Kubernetes-Cluster-with-Rancher-k3s-ArgoCD/main/Terraform/kubernetes/argocd/website-app.yaml
 
 
 # Save ArgoCD admin password

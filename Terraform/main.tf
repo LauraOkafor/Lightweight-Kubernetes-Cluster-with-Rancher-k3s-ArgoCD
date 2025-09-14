@@ -202,3 +202,4 @@ resource "aws_instance" "k8s_worker" {
     Role = "worker"
   }
 }
+
