@@ -86,7 +86,10 @@ kubectl patch svc argocd-server -n argocd -p '{
 }'
 
 # Apply your Application manifest (website-app.yaml)
-kubectl apply -f /home/ubuntu/kubernetes/argocd/website-app.yaml
+kubectl wait --for=condition=Established crd/applications.argoproj.io --timeout=300s || true
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/LauraOkafor/Lightweight-Kubernetes-Cluster-with-Rancher-k3s-ArgoCD/HEAD/kubernetes/argocd/website-app.yaml
+
 
 # Save ArgoCD admin password
 ARGOCD_PASS=$(kubectl -n argocd get secret argocd-initial-admin-secret \
