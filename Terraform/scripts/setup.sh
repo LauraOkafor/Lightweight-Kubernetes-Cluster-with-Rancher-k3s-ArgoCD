@@ -45,9 +45,9 @@ chown -R ubuntu:ubuntu /home/ubuntu/.kube
 # Make kubectl use this config during script run
 export KUBECONFIG=/home/ubuntu/.kube/config
 
-# Install Rancher
+# Install Rancher (using different ports to avoid conflict with website)
 docker run -d --restart=unless-stopped \
-  -p 8443:443 -p 8080:80 \
+  -p 9443:443 -p 9080:80 \
   --privileged \
   --name rancher \
   rancher/rancher:latest
@@ -98,7 +98,7 @@ echo $ARGOCD_PASS > /home/ubuntu/argocd-password.txt
 chown ubuntu:ubuntu /home/ubuntu/argocd-password.txt
 
 echo "✅ Setup completed successfully!"
-echo "🌐 Rancher URL: https://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
+echo "🌐 Rancher URL: https://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):9443"
 echo "🌐 ArgoCD URL: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):30080"
 echo "🔑 Rancher password: /home/ubuntu/rancher-password.txt"
 echo "🔑 ArgoCD password: /home/ubuntu/argocd-password.txt"

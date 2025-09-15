@@ -142,6 +142,21 @@ resource "aws_security_group" "k8s_cluster" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Rancher HTTP
+  ingress {
+    from_port   = 9080
+    to_port     = 9080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Rancher HTTPS
+  ingress {
+    from_port   = 9443
+    to_port     = 9443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   # All outbound traffic
   egress {
