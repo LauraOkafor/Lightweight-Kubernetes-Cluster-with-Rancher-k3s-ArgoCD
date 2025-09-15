@@ -85,6 +85,12 @@ kubectl patch svc argocd-server -n argocd -p '{
   }
 }'
 
+# Install nginx-ingress controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+# Wait for ingress controller
+sleep 30
+
 # Apply your Application manifest (website-app.yaml)
 kubectl wait --for=condition=Established crd/applications.argoproj.io --timeout=300s || true
 

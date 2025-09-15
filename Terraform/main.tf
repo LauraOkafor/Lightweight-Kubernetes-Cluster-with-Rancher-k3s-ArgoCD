@@ -158,6 +158,14 @@ resource "aws_security_group" "k8s_cluster" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Website NodePort
+  ingress {
+    from_port   = 30081
+    to_port     = 30081
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # Rancher HTTP
   ingress {
     from_port   = 9080
