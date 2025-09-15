@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/LauraOkafor/Lightweight-Kubernetes-Cluster-with-Rancher-k3s-ArgoCD.git
-    targetRevision: HEAD
+    targetRevision: main
     path: apps/website
   destination:
     server: https://kubernetes.default.svc
