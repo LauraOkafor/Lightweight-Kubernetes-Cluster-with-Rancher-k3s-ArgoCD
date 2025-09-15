@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/LauraOkafor/Lightweight-Kubernetes-Cluster-with-Rancher-k3s-ArgoCD.git
     targetRevision: main
-    path: apps/website
+    path: Terraform/apps/website
   destination:
     server: https://kubernetes.default.svc
     namespace: production
