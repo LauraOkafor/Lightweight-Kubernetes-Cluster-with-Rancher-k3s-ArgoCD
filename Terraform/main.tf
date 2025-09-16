@@ -242,3 +242,30 @@ resource "aws_instance" "k8s_worker" {
   }
 }
 
+# Auto-import k3s cluster to Rancher
+resource "null_resource" "rancher_import" {
+  provisioner "remote-exec" {
+    inline = [
+      "sleep 300",
+      "sudo docker exec rancher reset-password > /tmp/rancher_pass.txt",
+      "PASS=$(grep 'New password' /tmp/rancher_pass.txt | awk '{print $NF}')",
+      "TOKEN=$(curl -sk -X POST https://localhost:9443/v3-public/localProviders/local?action=login -H 'Content-Type: application/json' -d '{\"username\":\"admin\",\"password\":\"'$PASS'\"}' | jq -r .token)",
+      "CLUSTER=$(curl -sk -X POST https://localhost:9443/v3/clusters -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"type\":\"cluster\",\"name\":\"k3s-local\"}' | jq -r .id)",
+      "REG_TOKEN=$(curl -sk -X POST https://localhost:9443/v3/clusterregistrationtoken -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"type\":\"clusterRegistrationToken\",\"clusterId\":\"'$CLUSTER'\"}' | jq -r .manifestUrl)",
+      "kubectl apply -f $REG_TOKEN",
+      "echo 'Cluster imported successfully'"
+    ]
+    
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/${var.key_pair_name}.pem")
+      host        = aws_instance.k8s_master.public_ip
+    }
+  }
+  
+  depends_on = [aws_instance.k8s_master]
+}
+
+
+

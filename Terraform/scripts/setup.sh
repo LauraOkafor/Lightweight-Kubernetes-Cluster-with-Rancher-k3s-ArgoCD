@@ -16,7 +16,8 @@ apt-get install -y \
     gnupg \
     lsb-release \
     unzip \
-    git
+    git \
+    jq
 
 # Install Docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
