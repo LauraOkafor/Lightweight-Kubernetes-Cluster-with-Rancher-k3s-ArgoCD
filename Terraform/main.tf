@@ -242,18 +242,27 @@ resource "aws_instance" "k8s_worker" {
   }
 }
 
-# Auto-import k3s cluster to Rancher
+# Automated Rancher cluster import
 resource "null_resource" "rancher_import" {
   provisioner "remote-exec" {
     inline = [
-      "sleep 300",
-      "sudo docker exec rancher reset-password > /tmp/rancher_pass.txt",
-      "PASS=$(grep 'New password' /tmp/rancher_pass.txt | awk '{print $NF}')",
-      "TOKEN=$(curl -sk -X POST https://localhost:9443/v3-public/localProviders/local?action=login -H 'Content-Type: application/json' -d '{\"username\":\"admin\",\"password\":\"'$PASS'\"}' | jq -r .token)",
-      "CLUSTER=$(curl -sk -X POST https://localhost:9443/v3/clusters -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"type\":\"cluster\",\"name\":\"k3s-local\"}' | jq -r .id)",
-      "REG_TOKEN=$(curl -sk -X POST https://localhost:9443/v3/clusterregistrationtoken -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"type\":\"clusterRegistrationToken\",\"clusterId\":\"'$CLUSTER'\"}' | jq -r .manifestUrl)",
-      "kubectl apply -f $REG_TOKEN",
-      "echo 'Cluster imported successfully'"
+      "sleep 600",  # Wait 10 minutes for everything to be ready
+      "echo 'Starting Rancher import...'",
+      "sudo docker exec rancher reset-password 2>&1 | tee /tmp/reset.log",
+      "PASS=$(grep -o 'New password.*: [a-z0-9]*' /tmp/reset.log | awk '{print $NF}')",
+      "echo \"Password: $PASS\"",
+      "sleep 30",
+      "curl -k -X POST https://localhost:9443/v3-public/localProviders/local?action=login -H 'Content-Type: application/json' -d '{\"username\":\"admin\",\"password\":\"'$PASS'\"}' > /tmp/login.json",
+      "TOKEN=$(cat /tmp/login.json | jq -r .token)",
+      "echo \"Token obtained\"",
+      "curl -k -X POST https://localhost:9443/v3/clusters -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"type\":\"cluster\",\"name\":\"k3s-cluster\"}' > /tmp/cluster.json",
+      "CLUSTER_ID=$(cat /tmp/cluster.json | jq -r .id)",
+      "echo \"Cluster ID: $CLUSTER_ID\"",
+      "curl -k -X POST https://localhost:9443/v3/clusterregistrationtoken -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"type\":\"clusterRegistrationToken\",\"clusterId\":\"'$CLUSTER_ID'\"}' > /tmp/token.json",
+      "MANIFEST_URL=$(cat /tmp/token.json | jq -r .manifestUrl)",
+      "echo \"Applying manifest: $MANIFEST_URL\"",
+      "kubectl apply -f \"$MANIFEST_URL\"",
+      "echo 'Rancher import completed successfully!'"
     ]
     
     connection {
@@ -266,6 +275,8 @@ resource "null_resource" "rancher_import" {
   
   depends_on = [aws_instance.k8s_master]
 }
+
+
 
 
 
