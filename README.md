@@ -51,19 +51,19 @@ flowchart TD
 ```
 
 ## ⚙️ Setup Instructions
-** Clone Repository **
+**Clone Repository**
 ```
 git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
 ```
 
-** Provision Infrastructure **
+**Provision Infrastructure**
 ```
 cd terraform
 terraform init
 terraform apply -auto-approve
 ```
 
-** Access Dashboards **
-	- **Rancher UI:** https://<EC2_PUBLIC_IP>:9443
-	- **ArgoCD UI:** https://<EC2_PUBLIC_IP>:30080 (check outputs after Terraform apply)
+**Access Dashboards**
+- **Rancher UI:** https://<EC2_PUBLIC_IP>:9443
+- **ArgoCD UI:** https://<EC2_PUBLIC_IP>:30080 (check outputs after Terraform apply)
