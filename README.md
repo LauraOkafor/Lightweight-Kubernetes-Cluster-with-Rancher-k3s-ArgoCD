@@ -66,7 +66,17 @@ terraform apply -auto-approve
 
 **Access Dashboards**
 - **Rancher UI:** https://<EC2_PUBLIC_IP>:9443
+
+<img width="1440" height="900" alt="Screenshot 2025-09-26 at 22 46 00" src="https://github.com/user-attachments/assets/0ca46583-f63c-44ae-9a5d-6d188e61f570" />
+
+ <img width="1440" height="900" alt="Screenshot 2025-09-26 at 22 46 07" src="https://github.com/user-attachments/assets/d9a512bf-5f62-41c8-990a-afa6e57c268b" />
+
+
 - **ArgoCD UI:** https://<EC2_PUBLIC_IP>:30080 (check outputs after Terraform apply)
+
+  <img width="1440" height="900" alt="Screenshot 2025-09-26 at 23 01 03" src="https://github.com/user-attachments/assets/a1001aaa-8565-4467-8768-9a5077e842c3" />
+
+
 
 ---
 
