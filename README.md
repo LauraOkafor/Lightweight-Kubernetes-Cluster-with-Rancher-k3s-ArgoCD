@@ -36,3 +36,16 @@ The goal is to show how DevOps teams can automate infrastructure, deploy applica
 - kubectl installed
 - GitHub repo for storing manifests
 ---
+
+## 🏗️ Project Architecture
+
+```mermaid
+flowchart TD
+    A[Terraform] -->|Provision| B[AWS EC2 Instances]
+    B --> C[Rancher Server]
+    C --> D[k3s Master Node]
+    D --> E[Worker Nodes]
+    D --> F[ArgoCD]
+    F --> G[GitHub Repo]
+    F --> H[Demo Application]
+```
