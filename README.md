@@ -67,3 +67,43 @@ terraform apply -auto-approve
 **Access Dashboards**
 - **Rancher UI:** https://<EC2_PUBLIC_IP>:9443
 - **ArgoCD UI:** https://<EC2_PUBLIC_IP>:30080 (check outputs after Terraform apply)
+
+---
+
+## 🔍 Demonstration Scenarios
+**Drift Detection**
+```
+kubectl delete pod <pod-name>
+
+```
+✅ ➡️ ArgoCD detects drift and recreates the pod automatically.
+
+**Update Test**
+	- Change image version in deployment.yaml
+ - Commit & push to GitHub
+✅ ➡️ ArgoCD detects change and rolls out the new version.
+
+## 📊 Success Criteria
+- Rancher accessible and managing k3s cluster
+- ArgoCD UI accessible
+- Applications deployed from Git repo
+- Self-healing tested and working
+
+## 🧹 Cleanup
+```
+cd terraform
+terraform destroy -auto-approve
+```
+---
+## ✨ Future Enhancements
+- Add monitoring with Prometheus + Grafana
+- Add centralized logging with ELK stack
+- Implement CI/CD pipeline for Terraform
+- Expand to multi-environment (dev/staging/prod)
+---
+
+### 👩🏽‍💻 Author
+**Laura Okafor-Ndubueze**
+- 🌐 LinkedIn
+- 📧 lauraamanda56@gmail.com
+- 💻 Passionate about DevOps, Cloud & GitOps
