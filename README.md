@@ -29,4 +29,10 @@ The goal is to show how DevOps teams can automate infrastructure, deploy applica
 - **GitOps Workflow:** Applications deployed & updated automatically via ArgoCD.
 - **Self-Healing:** ArgoCD restores drifted resources to match Git.
 - **Scalable Setup:** Easily extendable to multiple environments.
+
+## 🔑 Prerequisites
+- AWS Account with credentials configured
+- Terraform installed
+- kubectl installed
+- GitHub repo for storing manifests
 ---
