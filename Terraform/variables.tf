@@ -34,3 +34,20 @@ variable "worker_node_count" {
   default     = 0
 }
 
+
+variable "rancher_url" {
+  description = "Rancher server URL"
+  default     = "https://your-rancher-server"
+}
+
+# variable "rancher_password" {
+#   description = "Rancher bootstrap password"
+#   type        = string
+#   sensitive   = true
+# }
+
+variable "cluster_name" {
+  description = "K3s cluster name in Rancher"
+  default     = "my-k3s-cluster"
+}
+
