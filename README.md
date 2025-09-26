@@ -21,3 +21,12 @@ The goal is to show how DevOps teams can automate infrastructure, deploy applica
 ✅ Drift detection & self-healing demonstration  
 
 ---
+
+ ## ⚡ Features
+- **Infrastructure as Code (IaC): Automated AWS infrastructure with Terraform.
+- **Automated Rancher Setup: Rancher is installed automatically on the master node.
+- **Automated ArgoCD Setup: ArgoCD is deployed automatically into the cluster.
+- **GitOps Workflow: Applications deployed & updated automatically via ArgoCD.
+- **Self-Healing: ArgoCD restores drifted resources to match Git.
+- **Scalable Setup: Easily extendable to multiple environments.
+---
