@@ -49,6 +49,8 @@ flowchart TD
     F --> G[GitHub Repo]
     F --> H[Demo Application]
 ```
+<img width="6144" height="3599" alt="rancher drawio" src="https://github.com/user-attachments/assets/b27e4c7a-5c8b-4b4d-b31b-8c3864b30d00" />
+
 
 ## ⚙️ Setup Instructions
 **Clone Repository**
